@@ -17,6 +17,7 @@ Thumbs.db
 .env.production
 .env.development
 *.env
+env.example
 
 
 docker-compose.override.yml
