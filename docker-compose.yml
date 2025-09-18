@@ -1,0 +1,39 @@
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: user-service-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: user_service_db
+      POSTGRES_USER: tonny
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tonny -d user_service_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    container_name: user-service-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/user_service_db
+      SPRING_DATASOURCE_USERNAME: tonny
+      SPRING_DATASOURCE_PASSWORD: secret
+      SERVER_PORT: 8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
