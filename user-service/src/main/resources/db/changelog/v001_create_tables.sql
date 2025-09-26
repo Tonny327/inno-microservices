@@ -16,9 +16,9 @@ CREATE INDEX idx_users_email ON users(email);
 CREATE TABLE card_info (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    number VARCHAR(16) NOT NULL,
+    number VARCHAR(16) NOT NULL UNIQUE,
     holder VARCHAR(255) NOT NULL,
-    expiration_date VARCHAR(5) NOT NULL
+    expiration_date DATE NOT NULL
 );
 
 CREATE INDEX idx_card_info_user_id ON card_info(user_id);
